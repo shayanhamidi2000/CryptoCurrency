@@ -1,5 +1,6 @@
 import secrets as sec
-import base58 as base58
+import base58
+import random
 from utils import Sha256, RipeMD160, calculate_checksum
 from elypticalCurve import *
 
@@ -23,7 +24,3 @@ def produce_keys():
     WIF_private_key = produce_WIF_private_key(private_key)
     address = produce_address(private_key)
     return WIF_private_key, address
-
-priv_key, pub_key = produce_keys()
-print(priv_key)
-print(pub_key)
