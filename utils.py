@@ -14,6 +14,10 @@ def RipeMD160(unhashed_data):
     digester.update(unhashed_data)
     return digester.digest()
 
+def calculate_checksum(key):
+    hashed_data = Sha256(Sha256(key))
+    return hashed_data[:4]
+
 def send_from_custom_transaction(
         amount_to_send, txid_to_spend, utxo_index,
         txin_scriptPubKey, txin_scriptSig, txout_scriptPubKey):

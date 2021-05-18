@@ -1,18 +1,29 @@
 import secrets as sec
 import base58 as base58
-from generateAddress import Sha256, RipeMD160
+from utils import Sha256, RipeMD160, calculate_checksum
+from elypticalCurve import *
 
-def calculate_checksum(key):
-    hashed_data = Sha256(Sha256(key))
-    return hashed_data[:4]
-
-def produce_WIF_private_key():
-    pure_hex_private_key = sec.token_bytes(32)
-    extended = b"\xef" + pure_hex_private_key
+def produce_WIF_private_key(private_key):
+    extended = b"\xef" + private_key
     checksum = calculate_checksum(extended)
     WIF_private_key_not_encoded = extended + checksum
-    return pure_hex_private_key, base58.b58encode(WIF_private_key_not_encoded)
+    return base58.b58encode(WIF_private_key_not_encoded)
 
-pk, pkWIP = produce_WIF_private_key()
-print(pk)
-print(pkWIP)
+
+def produce_address(private_key):
+    generating_point = Point.get_generator_point()
+    integer_private_key = int.from_bytes(private_key, "big")
+    hashed_value = RipeMD160(Sha256((generating_point * integer_private_key).to_bytes() ))
+    extended_address = b"\x6f" + hashed_value
+    checksumed_address = extended_address + calculate_checksum(extended_address)
+    return base58.b58encode(checksumed_address)
+
+def produce_keys():
+    private_key = sec.token_bytes(32)
+    WIF_private_key = produce_WIF_private_key(private_key)
+    address = produce_address(private_key)
+    return WIF_private_key, address
+
+priv_key, pub_key = produce_keys()
+print(priv_key)
+print(pub_key)
