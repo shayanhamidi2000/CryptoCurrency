@@ -2,14 +2,12 @@ import bitcoin.wallet
 from bitcoin.core import COIN, b2lx, serialize, x, lx, b2x
 from utils import *
 
-#address: mtRPkVPJscifRqeYiszHE9goJTbXphjuRc
-#priv_key: ae6d5a343f623026af8198e1667c314713722fcd59c488c86ad07353faf27d40
-#wif: 92ujfrxZnoniWgtn7YQtgeCkjVDhh97qsj7ujozfW2LbUvU69To
+#my Address: mpGjkiLSpPfrqU2kcMvmeQrPBDdpYT1gin
 bitcoin.SelectParams("testnet") ## Select the network (testnet or mainnet)
-my_private_key = bitcoin.wallet.CBitcoinSecret("91csCMJdVymT5i1YuiPrWkqH9AqZdi2d22bU9oK5ircKYR9saPK") # Private key in WIF format XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+my_private_key = bitcoin.wallet.CBitcoinSecret("939UoGyR1i9PnXB37wxaBLMuvtv77VfqG3Mst353X2qF626g3KA") # Private key in WIF format XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 my_public_key = my_private_key.pub
 my_address = bitcoin.wallet.P2PKHBitcoinAddress.from_pubkey(my_public_key)
-destination_address = bitcoin.wallet.CBitcoinAddress('mxCCif7LNNAd3veVkV9WmR2sbwkMngpMiA') # Destination address (recipient of the money)
+destination_address = bitcoin.wallet.CBitcoinAddress('mpGjkiLSpPfrqU2kcMvmeQrPBDdpYT1gin') # Destination address (recipient of the money)
 
 def P2PKH_scriptPubKey(address):
     ######################################################################
@@ -43,9 +41,9 @@ def send_from_P2PKH_transaction(amount_to_send, txid_to_spend, utxo_index,
 
 if __name__ == '__main__':
     ######################################################################
-    amount_to_send = 0.01419027
-    txid_to_spend = ('acb81b3c2ac5a44c4c1be44bbf234f7de9bd0e841e8f831fe0824aa2e2deb928') # TxHash of UTXO
-    utxo_index = 0 # UTXO index among transaction outputs
+    amount_to_send = 0.01144669
+    txid_to_spend = ('3e6e172d1c6a2520ae43d47fc22a96bc2a47629731b81d86c18fbe06f6c99988') # TxHash of UTXO
+    utxo_index = 1 # UTXO index among transaction outputs
     ######################################################################
 
     print(my_address) # Prints your address in base58

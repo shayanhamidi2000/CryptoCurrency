@@ -8,9 +8,9 @@ def find_vanity_address(first_bytes):
         base58.b58decode(first_bytes)
     except:
         return "error","Your characters are not in Base58 format!"
-    produced_private_key, produced_address = generateAddress.produce_keys()
-    while produced_address.decode("utf-8")[1:(len(first_bytes) + 1)] != first_bytes:
-        produced_private_key, produced_address = generateAddress.produce_keys()
+    _,_, produced_private_key, produced_address = generateAddress.produce_keys()
+    while produced_address[1:(len(first_bytes) + 1)] != first_bytes:
+        _,_, produced_private_key, produced_address = generateAddress.produce_keys()
     return produced_private_key, produced_address        
 
 first_bytes = input()
