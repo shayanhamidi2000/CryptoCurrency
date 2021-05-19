@@ -8,15 +8,15 @@ def find_vanity_address(first_bytes):
         base58.b58decode(first_bytes)
     except:
         return "error","Your characters are not in Base58 format!"
-    produced_private_key, produced_public_key = generateAddress.produce_keys()
-    while produced_public_key.decode("utf-8")[1:(len(first_bytes) + 1)] != first_bytes:
-        produced_private_key, produced_public_key = generateAddress.produce_keys()
-    return produced_private_key, produced_public_key        
+    produced_private_key, produced_address = generateAddress.produce_keys()
+    while produced_address.decode("utf-8")[1:(len(first_bytes) + 1)] != first_bytes:
+        produced_private_key, produced_address = generateAddress.produce_keys()
+    return produced_private_key, produced_address        
 
-first_three_bytes = input()
-private_key, public_key = find_vanity_address(first_three_bytes)
+first_bytes = input()
+private_key, address = find_vanity_address(first_bytes)
 if private_key == "error":
-    print(public_key)
+    print(address)
 else:
     print(private_key.decode("utf-8"))
-    print(public_key.decode("utf-8"))
+    print(address.decode("utf-8"))

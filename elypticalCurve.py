@@ -37,3 +37,9 @@ class Point:
 
     def to_bytes(self):
         return b"\x04" + self.x.to_bytes(32, "big") + self.y.to_bytes(32, "big")
+
+    def to_bytes_compressed(self):
+        if self.y % 2 == 1:
+           return b"\x03" + self.x.to_bytes(32, "big")
+        else:
+            return b"\x02" + self.x.to_bytes(32, "big")
