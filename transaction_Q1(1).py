@@ -15,35 +15,38 @@ def no_return_script_PubKey():
 def public_spendable_script_PubKey():
     return [OP_CHECKSIG]
 
+def get_txin_scriptPubKey():
+    return [OP_DUP, OP_HASH160, Hash160(my_public_key),OP_EQUALVERIFY ,OP_CHECKSIG]
+
 def scriptSig(txin, first_txout, second_txout, txin_scriptPubKey):
-    signature = create_OP_CHECKSIG_signature(txin, first_txout, second_txout, txin_scriptPubKey, my_private_key)
+    signature = create_OP_CHECKSIG_signature_two_outputs(txin, first_txout, second_txout, txin_scriptPubKey, my_private_key)
     return [signature, my_public_key]
 
-def send_from_P2PKH_transaction(amount_to_send, txid_to_spend, utxo_index,
-                                txout_scriptPubKey):
-    txout = create_txout(amount_to_send, txout_scriptPubKey)
-
-    txin_scriptPubKey = P2PKH_scriptPubKey(my_address)
+def make_transaction(first_amount_to_spend, second_amount_to_spend, txid_to_spend, utxo_index,
+                                first_txout_scriptPubKey, second_txout_scriptPubKey):
+    first_txout = create_txout(first_amount_to_spend, first_txout_scriptPubKey)
+    second_txout = create_txout(second_amount_to_spend, second_txout_scriptPubKey)
+    txin_scriptPubKey = get_txin_scriptPubKey()
     txin = create_txin(txid_to_spend, utxo_index)
-    txin_scriptSig = P2PKH_scriptSig(txin, txout, txin_scriptPubKey)
+    txin_scriptSig = scriptSig(txin, first_txout, second_txout, txin_scriptPubKey)
 
-    new_tx = create_signed_transaction(txin, txout, txin_scriptPubKey,
+    new_tx = create_signed_transaction_two_outputs(txin, first_txout, second_txout, txin_scriptPubKey,
                                        txin_scriptSig)
 
     return broadcast_transaction(new_tx)
 
 
 if __name__ == '__main__':
-    ######################################################################
-    amount_to_send = 0.01144669
-    txid_to_spend = ('3e6e172d1c6a2520ae43d47fc22a96bc2a47629731b81d86c18fbe06f6c99988') # TxHash of UTXO
-    utxo_index = 1 # UTXO index among transaction outputs
-    ######################################################################
+    first_amount_to_spend = 0.0001
+    second_amount_to_spend = 0.013 
+    txid_to_spend = ('779927b6cd9935657eb00b01430ca3ff8431ede0cbeb67a4389c5128ee8106f9') # TxHash of UTXO
+    utxo_index = 0
 
     print(my_address) # Prints your address in base58
     print(my_public_key.hex()) # Print your public key in hex
     print(my_private_key.hex()) # Print your private key in hex
-    txout_scriptPubKey = P2PKH_scriptPubKey(my_address)
-    response = send_from_P2PKH_transaction(amount_to_send, txid_to_spend, utxo_index, txout_scriptPubKey)
+    first_txout_scriptPubKey = no_return_script_PubKey()
+    second_txout_scriptPubKey = public_spendable_script_PubKey()
+    response = make_transaction(first_amount_to_spend, second_amount_to_spend, txid_to_spend, utxo_index, first_txout_scriptPubKey, second_txout_scriptPubKey)
     print(response.status_code, response.reason)
     print(response.text) # Report the hash of transaction which is printed in this section result

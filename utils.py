@@ -35,6 +35,12 @@ def create_txin(txid, utxo_index):
 def create_txout(amount, scriptPubKey):
     return CMutableTxOut(amount*COIN, CScript(scriptPubKey))
 
+def create_OP_CHECKSIG_signature_two_outputs(txin, first_txout, second_txout, txin_scriptPubKey, seckey):
+    tx = CMutableTransaction([txin], [first_txout, second_txout])
+    sighash = SignatureHash(CScript(txin_scriptPubKey), tx,
+                            0, SIGHASH_ALL)
+    sig = seckey.sign(sighash) + bytes([SIGHASH_ALL])
+    return sig
 
 def create_OP_CHECKSIG_signature(txin, txout, txin_scriptPubKey, seckey):
     tx = CMutableTransaction([txin], [txout])
@@ -43,6 +49,13 @@ def create_OP_CHECKSIG_signature(txin, txout, txin_scriptPubKey, seckey):
     sig = seckey.sign(sighash) + bytes([SIGHASH_ALL])
     return sig
 
+def create_signed_transaction_two_outputs(txin, first_txout, second_txout, txin_scriptPubKey,
+                              txin_scriptSig):
+    tx = CMutableTransaction([txin], [first_txout, second_txout])
+    txin.scriptSig = CScript(txin_scriptSig)
+    VerifyScript(txin.scriptSig, CScript(txin_scriptPubKey),
+                 tx, 0, (SCRIPT_VERIFY_P2SH,))
+    return tx
 
 def create_signed_transaction(txin, txout, txin_scriptPubKey,
                               txin_scriptSig):
