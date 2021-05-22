@@ -2,9 +2,6 @@ import bitcoin.wallet
 from bitcoin.core import COIN, b2lx, serialize, x, lx, b2x
 from utils import *
 
-#address: mtRPkVPJscifRqeYiszHE9goJTbXphjuRc
-#priv_key: ae6d5a343f623026af8198e1667c314713722fcd59c488c86ad07353faf27d40
-#wif: 92ujfrxZnoniWgtn7YQtgeCkjVDhh97qsj7ujozfW2LbUvU69To
 bitcoin.SelectParams("testnet") ## Select the network (testnet or mainnet)
 my_private_key = bitcoin.wallet.CBitcoinSecret("91csCMJdVymT5i1YuiPrWkqH9AqZdi2d22bU9oK5ircKYR9saPK") # Private key in WIF format XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 my_public_key = my_private_key.pub
@@ -15,7 +12,7 @@ def P2PKH_scriptPubKey(address):
     ######################################################################
     ## Fill out the operations for P2PKH scriptPubKey                   ##
 
-    return [OP_DUP, OP_HASH160, RipeMD160(Sha256(my_public_key)),OP_EQUALVERIFY ,OP_CHECKSIG] #Fill this section
+    return [OP_DUP, OP_HASH160, Hash160(my_public_key),OP_EQUALVERIFY ,OP_CHECKSIG] #Fill this section
     ######################################################################
 
 def P2PKH_scriptSig(txin, txout, txin_scriptPubKey):
@@ -40,12 +37,11 @@ def send_from_P2PKH_transaction(amount_to_send, txid_to_spend, utxo_index,
 
     return broadcast_transaction(new_tx)
 
-
 if __name__ == '__main__':
     ######################################################################
     amount_to_send = 0.01419027
     txid_to_spend = ('acb81b3c2ac5a44c4c1be44bbf234f7de9bd0e841e8f831fe0824aa2e2deb928') # TxHash of UTXO
-    utxo_index = 0 # UTXO index among transaction outputs
+    utxo_index = 1 # UTXO index among transaction outputs
     ######################################################################
 
     print(my_address) # Prints your address in base58

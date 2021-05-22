@@ -1,5 +1,5 @@
 class Point:
-    generator_prime = 2**256 - 2**32 - 2**9 - 2**8 - 2**7 - 2**6 - - 2**4 - 1
+    generator_prime = 2**256 - 2**32 - 2**9 - 2**8 - 2**7 - 2**6 - 2**4 - 1
 
     @staticmethod
     def get_generator_point():
@@ -25,14 +25,14 @@ class Point:
         if other is None:
             return self
         if self == other: #point Doubling
-            delta = pow(2 * self.y % Point.generator_prime, Point.generator_prime-2, Point.generator_prime)*(3*self.x*self.x) % Point.generator_prime
-            new_point_x = (delta**2 - 2*self.x) % Point.generator_prime
-            new_point_y = (delta*(self.x - new_point_x) - self.y) % Point.generator_prime
+            delta = pow(3*pow(self.x, 2, Point.generator_prime)*pow(2 * self.y, Point.generator_prime-2, Point.generator_prime), 1, Point.generator_prime)
+            new_point_x = pow((pow(delta,2) - 2*self.x), 1, Point.generator_prime)
+            new_point_y = pow((delta*(self.x - new_point_x) - self.y), 1, Point.generator_prime)
             return Point(new_point_x, new_point_y)
         else:
             delta = pow(other.x - self.x, Point.generator_prime - 2, Point.generator_prime) * (other.y - self.y) % Point.generator_prime
-            new_point_x = (delta**2 - self.x - other.x) % Point.generator_prime
-            new_point_y = (delta*(self.x - new_point_x) - self.y) % Point.generator_prime
+            new_point_x = pow((pow(delta,2) - self.x - other.x),1 ,Point.generator_prime)
+            new_point_y = pow((delta*(self.x - new_point_x) - self.y),1 ,Point.generator_prime)
             return Point(new_point_x, new_point_y)
 
     def to_bytes(self):

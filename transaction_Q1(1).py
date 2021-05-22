@@ -2,28 +2,22 @@ import bitcoin.wallet
 from bitcoin.core import COIN, b2lx, serialize, x, lx, b2x
 from utils import *
 
-#my Address: mpGjkiLSpPfrqU2kcMvmeQrPBDdpYT1gin
+#txid: 779927b6cd9935657eb00b01430ca3ff8431ede0cbeb67a4389c5128ee8106f9
+#my Address: mxCCif7LNNAd3veVkV9WmR2sbwkMngpMiA
 bitcoin.SelectParams("testnet") ## Select the network (testnet or mainnet)
-my_private_key = bitcoin.wallet.CBitcoinSecret("939UoGyR1i9PnXB37wxaBLMuvtv77VfqG3Mst353X2qF626g3KA") # Private key in WIF format XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+my_private_key = bitcoin.wallet.CBitcoinSecret("91csCMJdVymT5i1YuiPrWkqH9AqZdi2d22bU9oK5ircKYR9saPK") # Private key in WIF format XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 my_public_key = my_private_key.pub
 my_address = bitcoin.wallet.P2PKHBitcoinAddress.from_pubkey(my_public_key)
-destination_address = bitcoin.wallet.CBitcoinAddress('mpGjkiLSpPfrqU2kcMvmeQrPBDdpYT1gin') # Destination address (recipient of the money)
 
-def P2PKH_scriptPubKey(address):
-    ######################################################################
-    ## Fill out the operations for P2PKH scriptPubKey                   ##
+def no_return_script_PubKey():
+    return [OP_RETURN]
 
-    return [OP_DUP, OP_HASH160, RipeMD160(Sha256(my_public_key)),OP_EQUALVERIFY ,OP_CHECKSIG] #Fill this section
-    ######################################################################
+def public_spendable_script_PubKey():
+    return [OP_CHECKSIG]
 
-def P2PKH_scriptSig(txin, txout, txin_scriptPubKey):
-    ######################################################################
-    ## Fill out the operations for P2PKH scriptSig                      ##
-
-    signature = create_OP_CHECKSIG_signature(txin, txout, txin_scriptPubKey, my_private_key)
-
-    return [signature, my_public_key] #Fill this section
-    ######################################################################
+def scriptSig(txin, first_txout, second_txout, txin_scriptPubKey):
+    signature = create_OP_CHECKSIG_signature(txin, first_txout, second_txout, txin_scriptPubKey, my_private_key)
+    return [signature, my_public_key]
 
 def send_from_P2PKH_transaction(amount_to_send, txid_to_spend, utxo_index,
                                 txout_scriptPubKey):
