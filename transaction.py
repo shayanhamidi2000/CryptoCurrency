@@ -46,7 +46,7 @@ if __name__ == '__main__':
     print(my_address) # Prints your address in base58
     print(my_public_key.hex()) # Print your public key in hex
     print(my_private_key.hex()) # Print your private key in hex
-    txout_scriptPubKey = P2PKH_scriptPubKey(my_address)
-    response = send_from_P2PKH_transaction(amount_to_send, txid_to_spend, utxo_index, txout_scriptPubKey)
+    #txout_scriptPubKey = P2PKH_scriptPubKey(my_address)
+    #response = send_from_P2PKH_transaction(amount_to_send, txid_to_spend, utxo_index, txout_scriptPubKey)
     print(response.status_code, response.reason)
     print(response.text) # Report the hash of transaction which is printed in this section result
