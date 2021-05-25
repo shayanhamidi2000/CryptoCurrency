@@ -1,6 +1,6 @@
 import requests
 import hashlib as hash
-from bitcoin.core import b2x, lx, COIN, COutPoint, CMutableTxOut, CMutableTxIn, CMutableTransaction, Hash160
+from bitcoin.core import b2x, lx, COIN, COutPoint, CMutableTxOut, CMutableTxIn, CMutableTransaction, Hash160, CTxInWitness, CTxWitness
 from bitcoin.core.script import *
 from bitcoin.core.scripteval import VerifyScript, SCRIPT_VERIFY_P2SH
 
@@ -49,6 +49,13 @@ def create_OP_CHECKSIG_signature(txin, txout, txin_scriptPubKey, seckey):
     sig = seckey.sign(sighash) + bytes([SIGHASH_ALL])
     return sig
 
+def create_witness(txin, txout, redeem_script, seckey, amount_spent):
+    tx = CMutableTransaction([txin], [txout])
+    sighash = SignatureHash(redeem_script, tx, 0, 
+        SIGHASH_ALL, amount=int(amount_spent*COIN), sigversion=SIGVERSION_WITNESS_V0)
+    sig = seckey.sign(sighash) + bytes([SIGHASH_ALL])
+    return sig
+
 def create_signed_transaction_two_outputs(txin, first_txout, second_txout, txin_scriptPubKey,
                               txin_scriptSig):
     tx = CMutableTransaction([txin], [first_txout, second_txout])
@@ -63,6 +70,12 @@ def create_signed_transaction(txin, txout, txin_scriptPubKey,
     txin.scriptSig = CScript(txin_scriptSig)
     VerifyScript(txin.scriptSig, CScript(txin_scriptPubKey),
                  tx, 0, (SCRIPT_VERIFY_P2SH,))
+    return tx
+
+def create_transaction_with_witness(txin, txout, txin_witness):
+    tx = CMutableTransaction([txin], [txout])
+    ctxinwitnesses = [CTxInWitness(CScriptWitness(txin_witness))]
+    tx.wit = CTxWitness(ctxinwitnesses)
     return tx
 
 

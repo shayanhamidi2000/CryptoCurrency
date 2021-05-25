@@ -2,8 +2,9 @@ import bitcoin.bech32
 import bitcoin.wallet
 import secrets as sec
 from elypticalCurve import *
-from utils import Sha256, RipeMD160
 from generateAddress import produce_WIF_private_key
+from bitcoin.core import COIN, b2lx, serialize, x, lx, b2x
+from utils import *
 
 def generate_segwit_address():
     private_key = sec.token_bytes(32)
@@ -14,3 +15,4 @@ def generate_segwit_address():
     hashed_public_key = RipeMD160(Sha256(public_key))
     segwit_address = bitcoin.bech32.encode('tb', 0, hashed_public_key)
     return WIF_private_key, segwit_address
+

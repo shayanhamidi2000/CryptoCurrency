@@ -28,6 +28,3 @@ def produce_keys():
     public_key, address = produce_address(private_key)
     return WIF_private_key, address
 
-WIF_private_key, address = produce_keys()
-print(WIF_private_key.decode("utf-8"))
-print(address.decode("utf-8"))
